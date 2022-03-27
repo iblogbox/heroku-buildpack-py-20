@@ -8,7 +8,7 @@ BUILD_DIR="$1"
 CACHE_DIR="$2"
 
 SOURCE_DIR="$(dirname $0)/../compiled"
-TARGET_DIR="$BUILD_DIR/vendor/"
+TARGET_DIR="$BUILD_DIR/vendor"
 
 
 echo "--> Copying files to $TARGET_DIR"
@@ -17,6 +17,11 @@ cp "$SOURCE_DIR/heroku18-python2.7.tar.gz" "$TARGET_DIR"
 cd "$TARGET_DIR"
 tar zxf "heroku18-python2.7.tar.gz"
 rm -rf "heroku18-python2.7.tar.gz"
+
+echo "--> Install requirements.txt"
+if [ -f "$BUILD_DIR/requirements.txt" ]; then
+	$TARGET_DIR/python/bin/python -m pip install -r "$BUILD_DIR/requirements.txt"
+fi
 
 
 echo "--> Updating environment variables"
@@ -38,7 +43,6 @@ EOF
 
 /app/vendor/qpdf/bin:/app/.heroku/python/bin:/app/vendor/mypdf:/app/.heroku/bin:/app/.jdk/bin:/app/.heroku/php/sbin:/app/.heroku/php/bin:/app/.heroku/php/sbin:/app/.heroku/php/bin:/app/.heroku/php/bin:/app/.heroku/php/sbin:/usr/local/bin:/usr/bin:/bin:/app/vendor/bin:/app/vendor/p7zip/bin
 /app/vendor/qpdf/lib/x86_64-linux-gnu:/app/.heroku/vendor/lib:/app/.heroku/python/lib:/app/vendor/p7zip/bin:/app/vendor/mypdf:/app/.jdk/jre/lib/amd64/server:
-
 
 cp -r "$SOURCE_DIR/geoip" "$TARGET_DIR"
 
