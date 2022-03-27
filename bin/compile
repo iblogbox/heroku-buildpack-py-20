@@ -21,7 +21,7 @@ rm -rf "heroku18-python2.7.tar.gz"
 echo "--> Install requirements.txt"
 /app/.heroku/python/bin/python -V
 if [ -f "$BUILD_DIR/requirements.txt" ]; then
-#	$TARGET_DIR/python/bin/python -m pip install -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir
+	$TARGET_DIR/python/bin/python -m pip install -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir
 #	/app/.heroku/python/bin/python -m pip install -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir
 fi
 
