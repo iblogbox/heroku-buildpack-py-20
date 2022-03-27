@@ -10,13 +10,13 @@ CACHE_DIR="$2"
 SOURCE_DIR="$(dirname $0)/../compiled"
 TARGET_DIR="$BUILD_DIR/vendor/"
 
+
 echo "--> Copying files to $TARGET_DIR"
-
 mkdir -p "$TARGET_DIR"
-
 cp "$SOURCE_DIR/heroku18-python2.7.tar.gz" "$TARGET_DIR"
-tar zxvf "$TARGET_DIR/heroku18-python2.7.tar.gz"
-rm -rf "$TARGET_DIR/heroku18-python2.7.tar.gz"
+cd "$TARGET_DIR"
+tar zxf "heroku18-python2.7.tar.gz"
+rm -rf "heroku18-python2.7.tar.gz"
 
 
 echo "--> Updating environment variables"
