@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+BUILD_DIR="$1"
+CACHE_DIR="$2"
+
+SOURCE_DIR="$(dirname $0)/../compiled"
+TARGET_DIR="$BUILD_DIR/vendor/"
+
+echo "--> Copying files to $TARGET_DIR"
+
+mkdir -p "$TARGET_DIR"
+
+cp "$SOURCE_DIR/heroku18-python2.7.tar.gz" "$TARGET_DIR"
+tar zxvf "$TARGET_DIR/heroku18-python2.7.tar.gz"
+rm -rf "$TARGET_DIR/heroku18-python2.7.tar.gz"
+
+
+echo "--> Updating environment variables"
+PROFILE_PATH="$BUILD_DIR/.profile.d/python2.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo "export PATH=/app/vendor/python/bin:\$PATH" >> $PROFILE_PATH
+echo "export LD_LIBRARY_PATH=/app/vendor/python/lib:\$LD_LIBRARY_PATH" >> $PROFILE_PATH
+
+
+
+:<<'END'
+echo "--> Creating environment variables"
+mkdir -p $BUILD_DIR/.profile.d
+cat <<EOF >$BUILD_DIR/.profile.d/python2.sh
+export PATH="\$HOME/.heroku/vendor/python/bin:\$PATH"
+export LD_LIBRARY_PATH="\$HOME/.heroku/vendor/python/lib:\$LD_LIBRARY_PATH"
+export PYTHONPATH="\$HOME/.heroku/vendor/python/lib/python2.7"
+EOF
+
+/app/vendor/qpdf/bin:/app/.heroku/python/bin:/app/vendor/mypdf:/app/.heroku/bin:/app/.jdk/bin:/app/.heroku/php/sbin:/app/.heroku/php/bin:/app/.heroku/php/sbin:/app/.heroku/php/bin:/app/.heroku/php/bin:/app/.heroku/php/sbin:/usr/local/bin:/usr/bin:/bin:/app/vendor/bin:/app/vendor/p7zip/bin
+/app/vendor/qpdf/lib/x86_64-linux-gnu:/app/.heroku/vendor/lib:/app/.heroku/python/lib:/app/vendor/p7zip/bin:/app/vendor/mypdf:/app/.jdk/jre/lib/amd64/server:
+
+
+cp -r "$SOURCE_DIR/geoip" "$TARGET_DIR"
+
+if [ -f "$BUILD_DIR/geoip.txt" ]; then
+	value=`cat "$BUILD_DIR/geoip.txt"`	
+	value=`echo $value | sed 's/ *$//g'`
+	if [ "$value" == "nocopygeodata" ]; then
+		rm -rf "$TARGET_DIR/geoip/GeoLiteCity3.dat"
+		echo "geoip.txt --> $value (ok)"
+	fi
+fi
+END
