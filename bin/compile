@@ -8,7 +8,7 @@ BUILD_DIR="$1"
 CACHE_DIR="$2"
 
 SOURCE_DIR="$(dirname $0)/../compiled"
-TARGET_DIR="$BUILD_DIR/vendor"
+TARGET_DIR="$BUILD_DIR/.heroku"
 
 
 echo "--> Copying files to $TARGET_DIR"
@@ -19,20 +19,24 @@ tar zxf "heroku18-python2.7.tar.gz"
 rm -rf "heroku18-python2.7.tar.gz"
 
 echo "--> Install requirements.txt"
+/app/.heroku/python/bin/python -V
 if [ -f "$BUILD_DIR/requirements.txt" ]; then
-	$TARGET_DIR/python/bin/python -m pip install -r "$BUILD_DIR/requirements.txt"
+#	$TARGET_DIR/python/bin/python -m pip install -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir
+#	/app/.heroku/python/bin/python -m pip install -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir
 fi
-
 
 echo "--> Updating environment variables"
 PROFILE_PATH="$BUILD_DIR/.profile.d/python2.sh"
 mkdir -p $(dirname $PROFILE_PATH)
-echo "export PATH=/app/vendor/python/bin:\$PATH" >> $PROFILE_PATH
-echo "export LD_LIBRARY_PATH=/app/vendor/python/lib:\$LD_LIBRARY_PATH" >> $PROFILE_PATH
+echo "export PATH=/app/.heroku/python/bin:\$PATH" >> $PROFILE_PATH
+echo "export LD_LIBRARY_PATH=/app/.heroku/python/lib:\$LD_LIBRARY_PATH" >> $PROFILE_PATH
 
 
 
 :<<'END'
+https://github.com/heroku/heroku-buildpack-python/blob/f3abce6ac660a009c7ffac95d5b86d231555c28a/bin/steps/pip-install
+/app/.heroku/python/bin/pip install -r "$BUILD_DIR/requirements.txt" --exists-action=w --src=/app/.heroku/src --disable-pip-version-check --no-cache-dir 2>&1 | tee "$WARNINGS_LOG" | 
+
 echo "--> Creating environment variables"
 mkdir -p $BUILD_DIR/.profile.d
 cat <<EOF >$BUILD_DIR/.profile.d/python2.sh
